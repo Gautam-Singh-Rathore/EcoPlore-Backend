@@ -2,10 +2,8 @@ package com.greenplore.Backend.user_service.controller;
 
 import com.greenplore.Backend.user_service.auth.JwtService;
 import com.greenplore.Backend.user_service.auth.RefreshTokenService;
-import com.greenplore.Backend.user_service.dto.CustomerSignUpRequest;
-import com.greenplore.Backend.user_service.dto.LoginRequestDto;
-import com.greenplore.Backend.user_service.dto.LoginResponseDto;
-import com.greenplore.Backend.user_service.dto.SellerSignUpRequest;
+import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
+import com.greenplore.Backend.user_service.dto.*;
 import com.greenplore.Backend.user_service.service.CustomerService;
 import com.greenplore.Backend.user_service.service.SellerService;
 import com.greenplore.Backend.user_service.service.UserService;
@@ -15,12 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -77,4 +74,7 @@ public class AuthController {
 
         return ResponseEntity.ok("Login successfully");
     }
+
+    
+    
 }
