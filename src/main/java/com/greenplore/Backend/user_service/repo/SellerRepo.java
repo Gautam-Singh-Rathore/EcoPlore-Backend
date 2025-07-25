@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface SellerRepo extends JpaRepository<Seller , UUID> {
 
     Optional<Seller> findByUser(User user);
+    Optional<Seller> findByUserId(UUID userId);
 }

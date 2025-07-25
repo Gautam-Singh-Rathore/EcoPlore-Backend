@@ -11,3 +11,7 @@ spring:
       ddl-auto: update
     show-sql: true
 
+#delivery:
+#  baseUrl: https://staging-express.delhivery.com
+#  apiKey: da9e1e6b99239f3bd7f4c2bec4866e4d06903edc
+

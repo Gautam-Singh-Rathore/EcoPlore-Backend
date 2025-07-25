@@ -68,6 +68,8 @@ public class ProductService {
                 .subCategory(subCategory)
                 .seller(seller)
                 .build();
+        
+                productRepo.save(newProduct);
         return "Product added";
     }
 

@@ -25,6 +25,7 @@ public class ProductsControllerPrivate {
     public ResponseEntity addProducts(
              @RequestBody AddProductDto productDto
             ){
+        System.out.println(productDto);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(productService.addProduct(user , productDto));
