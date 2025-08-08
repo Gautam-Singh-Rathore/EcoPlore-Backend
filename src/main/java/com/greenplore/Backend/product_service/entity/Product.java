@@ -18,6 +18,7 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "char(36)")
     private UUID id;
 
     @Column(nullable = false)
@@ -49,5 +50,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    private Double height;
+    private Double length;
+    private Double width;
+
+    private Double weight;
 
 }

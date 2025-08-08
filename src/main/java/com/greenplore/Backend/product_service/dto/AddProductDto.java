@@ -10,6 +10,10 @@ public record AddProductDto(
         Long noOfUnits,
         String details,
         Long categoryId,
-        Long subCategoryId
-) {
+        Long subCategoryId ,
+        Double height ,
+        Double length ,
+        Double width ,
+        Double weight
+        ) {
 }

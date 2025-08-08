@@ -16,6 +16,7 @@ public class Customer {
 
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "char(36)")
     private UUID uid;
 
     @Column(nullable = false)

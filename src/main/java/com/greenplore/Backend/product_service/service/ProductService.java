@@ -67,7 +67,12 @@ public class ProductService {
                 .category(category)
                 .subCategory(subCategory)
                 .seller(seller)
+                .height(productDto.height())
+                .length(productDto.length())
+                .width(productDto.width())
+                .weight(productDto.weight())
                 .build();
+
         
                 productRepo.save(newProduct);
         return "Product added";
