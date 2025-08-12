@@ -9,7 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+#    show-sql: true
   devtools:
     restart:
       enabled: false
+logging:
+  level:
+    root: info

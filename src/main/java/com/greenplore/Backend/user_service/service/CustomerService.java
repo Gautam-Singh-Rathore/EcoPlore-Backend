@@ -1,5 +1,9 @@
 package com.greenplore.Backend.user_service.service;
 
+import com.greenplore.Backend.order_service.entity.Cart;
+import com.greenplore.Backend.order_service.entity.Wishlist;
+import com.greenplore.Backend.order_service.repo.CartRepo;
+import com.greenplore.Backend.order_service.repo.WishlistRepo;
 import com.greenplore.Backend.user_service.dto.CustomerSignUpRequest;
 import com.greenplore.Backend.user_service.entity.Customer;
 import com.greenplore.Backend.user_service.entity.User;
@@ -27,6 +31,10 @@ public class CustomerService {
     private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private CartRepo cartRepo;
+    @Autowired
+    private WishlistRepo wishlistRepo;
 
     @Transactional
     public Boolean registerCustomer(CustomerSignUpRequest request) {
@@ -48,6 +56,15 @@ public class CustomerService {
                     savedUser
             );
             Customer savedCustomer = customerRepo.save(newCustomer);
+            Cart cart = Cart.builder()
+                    .customer(savedCustomer)
+                    .build();
+            cartRepo.save(cart);
+
+            Wishlist wishlist = Wishlist.builder()
+                    .customer(savedCustomer)
+                    .build();
+            wishlistRepo.save(wishlist);
             return true;
         }catch (Exception e){
             throw new UserNotCreatedException("User not created error message : "+e.getMessage());

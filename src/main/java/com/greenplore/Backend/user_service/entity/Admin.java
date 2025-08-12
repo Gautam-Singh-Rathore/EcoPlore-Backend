@@ -15,7 +15,9 @@ import java.util.UUID;
 public class Admin{
     @Id
     @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)")
     private UUID uid;
+
     @Column(nullable = false)
     private String fullName;
     @Column(nullable = false , length = 10)

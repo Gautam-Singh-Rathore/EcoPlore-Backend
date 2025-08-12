@@ -20,8 +20,10 @@ import java.util.UUID;
 public class Seller {
 
     @Id
+    @Column(columnDefinition = "BINARY(16)")
     @GeneratedValue
     private UUID uid;
+
     @Column(nullable = false)
     private String companyName;
 
