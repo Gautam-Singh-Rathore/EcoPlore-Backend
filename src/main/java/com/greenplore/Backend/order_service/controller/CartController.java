@@ -4,7 +4,6 @@ import com.greenplore.Backend.order_service.dto.CartDto;
 import com.greenplore.Backend.order_service.service.CartService;
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,5 +50,14 @@ public class CartController {
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         String response = cartService.editProductInCart(user, item);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/remove/{orderItemId}")
+    public ResponseEntity<?> removeFromCart(
+            @PathVariable Long orderItemId
+    ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(cartService.removeItemFromCart(orderItemId));
     }
 }
