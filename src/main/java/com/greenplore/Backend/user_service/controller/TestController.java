@@ -1,6 +1,8 @@
 package com.greenplore.Backend.user_service.controller;
 
+import com.greenplore.Backend.user_service.dto.AddressRequestDto;
 import com.greenplore.Backend.user_service.dto.Profile;
+import com.greenplore.Backend.user_service.service.AddressService;
 import com.greenplore.Backend.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,9 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import com.greenplore.Backend.user_service.dto.MeDetails;
@@ -21,6 +21,8 @@ import com.greenplore.Backend.user_service.dto.MeDetails;
 public class TestController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private AddressService addressService;
 
     @GetMapping("public/hello")
     public String hello(){
@@ -57,6 +59,24 @@ public class TestController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
         }
     }
+
+    @GetMapping("private/address/get")
+    public ResponseEntity<?> getUserAddresses(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.getAddresses(user));
+    }
+
+    @PostMapping("/private/address/add")
+    public ResponseEntity<?> addUserAddress(
+            @RequestBody AddressRequestDto addressRequestDto
+            ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.addAddress(user , addressRequestDto));
+    }
+
+
 
 
 
