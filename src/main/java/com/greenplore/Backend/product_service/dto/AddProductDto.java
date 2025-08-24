@@ -11,9 +11,9 @@ public record AddProductDto(
         String details,
         Long categoryId,
         Long subCategoryId ,
-        Double height ,
-        Double length ,
-        Double width ,
-        Double weight
+        Integer height ,
+        Integer length ,
+        Integer width ,
+        Integer weight
         ) {
 }

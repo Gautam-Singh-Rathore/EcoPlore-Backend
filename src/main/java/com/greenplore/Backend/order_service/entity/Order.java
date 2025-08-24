@@ -43,5 +43,19 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address deliveryAddress;
 
-    // Payment information
+    // Shipment details
+    @Column(name = "awb_number")
+    private String awbNumber;
+
+    @Column(name = "courier_name")
+    private String courierName;
+
+    @Column(name = "shipment_label_url")
+    private String shipmentLabelUrl;
+
+    @Column(name = "shipment_status")
+    private String shipmentStatus;
+
+    @Column(name = "shipment_id")
+    private Long shipmentId;
 }

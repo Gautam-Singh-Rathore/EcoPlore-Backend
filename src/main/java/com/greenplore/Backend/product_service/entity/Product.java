@@ -52,10 +52,10 @@ public class Product {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    private Double height;
-    private Double length;
-    private Double width;
+    private Integer height;
+    private Integer length;
+    private Integer width;
 
-    private Double weight;
+    private Integer weight;
 
 }

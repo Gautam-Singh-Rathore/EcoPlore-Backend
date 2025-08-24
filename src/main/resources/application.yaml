@@ -16,3 +16,12 @@ spring:
 logging:
   level:
     root: info
+
+rzp:
+  key-id: rzp_test_R6Jk7RQhk9fG4F
+  key-secret: Ns5XYmkS65nf6m3QpeNfRgDr
+  currency: INR
+  company-name: MyCompany
+
+nimbus:
+  token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NTYwMTIwNDQsImp0aSI6IlNQTWJvZmxXZFNGazBRdVhQb2hLMCtUWHdaUEQrVFVNTUtwNnV4T3Y4OHM9IiwibmJmIjoxNzU2MDEyMDQ0LCJleHAiOjE3NTYwMjI4NDQsImRhdGEiOnsidXNlcl9pZCI6IjIxNjkxMiIsInBhcmVudF9pZCI6IjAifX0.fTlh4v9foVzvieCg2KF9ExKKptUunOP1V_-VyOTP4OkMr77eK0JMWGeOv0IVCo0_yOf4I8dp8G2yE87nhDwKjw
