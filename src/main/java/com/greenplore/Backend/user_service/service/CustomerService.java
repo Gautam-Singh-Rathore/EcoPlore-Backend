@@ -37,7 +37,7 @@ public class CustomerService {
     private WishlistRepo wishlistRepo;
 
     @Transactional
-    public Boolean registerCustomer(CustomerSignUpRequest request) {
+    public String registerCustomer(CustomerSignUpRequest request) {
         if(userService.userExists(request.email())){
             throw  new UserAlreadyPresentException("User already present with email"+request.email());
         }
@@ -65,7 +65,9 @@ public class CustomerService {
                     .customer(savedCustomer)
                     .build();
             wishlistRepo.save(wishlist);
-            return true;
+            // Generate and send OTP for email verification
+            userService.generateAndSendOtp(request.email());
+            return "Customer registered successfully. Please check your email for OTP verification.";
         }catch (Exception e){
             throw new UserNotCreatedException("User not created error message : "+e.getMessage());
         }

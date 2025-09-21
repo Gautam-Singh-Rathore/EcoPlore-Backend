@@ -35,6 +35,11 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    // New field for email verification
+    private Boolean isVerified = false;
+    private String otp;
+    private LocalDateTime otpExpiryTime;
+
 
 
     @PrePersist
@@ -56,6 +61,7 @@ public class User {
         this.password=password;
         this.provider=provider;
         this.role=role;
+        this.isVerified = false;
     }
 
 

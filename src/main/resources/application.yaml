@@ -13,6 +13,18 @@ spring:
   devtools:
     restart:
       enabled: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: infogreenplore@gmail.com
+    password: xcvcnwrblfmqgsak
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 logging:
   level:
     root: info

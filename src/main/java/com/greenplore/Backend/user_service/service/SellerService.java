@@ -32,7 +32,7 @@ public class SellerService {
     private UserService userService;
 
     @Transactional
-    public Boolean registerSeller(SellerSignUpRequest request) {
+    public String registerSeller(SellerSignUpRequest request) {
         if(userService.userExists(request.email())){
             throw  new UserAlreadyPresentException("User already present with email"+request.email());
         }
@@ -64,7 +64,11 @@ public class SellerService {
                     .user(savedUser)
                 .build();
             Seller  savedSeller = sellerRepo.save(newSeller);
-            return true;
+
+            // Generate and send OTP for email verification
+            userService.generateAndSendOtp(request.email());
+
+            return "Seller registered successfully. Please check your email for OTP verification.";
         }catch (Exception e){
             throw new UserNotCreatedException("User not created error message : "+e.getMessage());
         }
