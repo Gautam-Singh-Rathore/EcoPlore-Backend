@@ -53,6 +53,10 @@ public class OrderController {
         try {
             String payload = request.getRazorpayOrderId() + "|" + request.getRazorpayPaymentId();
             String actualSignature = hmacSHA256(payload, secret);
+            System.out.println("Payload: " + payload);
+            System.out.println("Expected Signature: " + request.getRazorpaySignature());
+            System.out.println("Actual Signature:   " + actualSignature);
+
 
             if (actualSignature.equals(request.getRazorpaySignature())) {
                 return ResponseEntity.ok("Payment verification successful");
@@ -69,8 +73,17 @@ public class OrderController {
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes(), "HmacSHA256");
         sha256_HMAC.init(secretKey);
         byte[] hash = sha256_HMAC.doFinal(data.getBytes());
-        return new String(Base64.getEncoder().encode(hash));
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+
+        return hexString.toString();
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(

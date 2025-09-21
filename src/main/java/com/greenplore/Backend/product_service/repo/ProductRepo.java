@@ -14,4 +14,6 @@ public interface ProductRepo extends JpaRepository<Product , UUID> {
     Optional<List<Product>> findByCategory(Category category);
 
     Optional<List<Product>> findBySubCategory(SubCategory subCategory);
+
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String name1);
 }

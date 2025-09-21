@@ -17,6 +17,7 @@ public class SubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

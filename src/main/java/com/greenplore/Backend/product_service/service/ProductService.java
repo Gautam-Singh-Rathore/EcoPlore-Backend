@@ -105,4 +105,11 @@ public class ProductService {
                 .orElseThrow(()-> new ProductNotFoundException("Products not found for id "+id));
         return mapper.productToProductResponse(product);
     }
+
+    public List<ProductCardResponseDto> searchProduct(String name) {
+        List<Product> products = productRepo.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(name,name);
+        return products.stream()
+                .map(mapper::productsToProductsCardResponse)
+                .toList();
+    }
 }

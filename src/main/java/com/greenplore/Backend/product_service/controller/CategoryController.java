@@ -26,4 +26,10 @@ public class CategoryController {
     ){
         return ResponseEntity.ok(categoryService.findSubCategoryByCategoryId(id));
     }
+
+    @GetMapping("/sub/all")
+    public ResponseEntity getAllSubcategories(){
+        return ResponseEntity.ok(categoryService.findAllSubCategories());
+    }
+
 }

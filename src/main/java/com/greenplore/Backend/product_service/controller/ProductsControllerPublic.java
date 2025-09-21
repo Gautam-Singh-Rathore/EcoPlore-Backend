@@ -30,4 +30,11 @@ public class ProductsControllerPublic {
     public ResponseEntity getProductById(@PathVariable UUID id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity searchProducts(
+            @PathVariable String name
+    ){
+        return ResponseEntity.ok(productService.searchProduct(name));
+    }
 }

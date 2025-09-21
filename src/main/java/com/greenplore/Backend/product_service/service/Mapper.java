@@ -26,7 +26,8 @@ public class Mapper {
     public SubCategoryResponse subCategoryToSubCategoryResponse(SubCategory subCategory){
         return new SubCategoryResponse(
                 subCategory.getId(),
-                subCategory.getName()
+                subCategory.getName(),
+                subCategory.getImageUrl()
         );
     }
 
