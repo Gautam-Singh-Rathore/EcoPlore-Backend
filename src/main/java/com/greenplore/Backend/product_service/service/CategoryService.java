@@ -32,7 +32,13 @@ public class CategoryService {
     }
 
     public List<SubCategoryResponse> findSubCategoryByCategoryId(Long id) {
-        return null;
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(()-> new CategoryNotFound("Category not found for id: "+id
+                ));
+        List<SubCategory> subCategories = subCategoryRepo.findByCategory(category);
+        return subCategories.stream()
+                .map(mapper::subCategoryToSubCategoryResponse)
+                .toList();
     }
 
     public List<SubCategoryResponse> findAllSubCategories() {
