@@ -8,6 +8,7 @@ import com.greenplore.Backend.user_service.entity.Customer;
 import com.greenplore.Backend.user_service.entity.RefreshToken;
 import com.greenplore.Backend.user_service.entity.Seller;
 import com.greenplore.Backend.user_service.entity.User;
+import com.greenplore.Backend.user_service.exception.EmailNotVerifiedException;
 import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.repo.CustomerRepo;
 import com.greenplore.Backend.user_service.repo.SellerRepo;
@@ -100,7 +101,7 @@ public class UserService {
 
         // Check if user is verified
         if (!user.getIsVerified()) {
-            throw new RuntimeException("Email not verified. Please verify your email first.");
+            throw new EmailNotVerifiedException("Email not verified. Please verify your email first.");
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email() , request.password()));
         if(authentication.isAuthenticated()){

@@ -4,9 +4,12 @@ import com.greenplore.Backend.user_service.auth.JwtService;
 import com.greenplore.Backend.user_service.auth.RefreshTokenService;
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import com.greenplore.Backend.user_service.dto.*;
+import com.greenplore.Backend.user_service.exception.EmailNotVerifiedException;
+import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.service.CustomerService;
 import com.greenplore.Backend.user_service.service.SellerService;
 import com.greenplore.Backend.user_service.service.UserService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,15 +103,43 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logout(HttpServletResponse response){
+        // remove the accessCookie
+        ResponseCookie accessCookie = ResponseCookie.from("accessToken" , null)
+                .httpOnly(true)
+//                .secure(true)
+//                .sameSite("None")
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+        // remove the refreshCookie
+        ResponseCookie refreshCookie = ResponseCookie.from("refreshToken"  , null)
+                .httpOnly(true)
+//                .secure(true)
+//                .sameSite("None")
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+        return ResponseEntity.ok()
+                .header("Set-Cookie", accessCookie.toString())
+                .header("Set-Cookie", refreshCookie.toString())
+                .body("Logged out successfully");
+    }
+
 
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody LoginRequestDto request , HttpServletResponse response){
         try {
             LoginResponseDto responseDto = userService.login(request);
+            System.out.println(responseDto);
             ResponseCookie accessCookie = ResponseCookie.from("accessToken" , responseDto.accessToken())
                     .httpOnly(true)
 //                .secure(true)
-                    .sameSite("None")
+//                .sameSite("None")
+                    .sameSite("Lax")
                     .path("/")
                     .maxAge(60*60)
                     .build();
@@ -116,7 +147,8 @@ public class AuthController {
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken"  , responseDto.refreshToken())
                     .httpOnly(true)
 //                .secure(true)
-                    .sameSite("None")
+//                .sameSite("None")
+                    .sameSite("Lax")
                     .path("/")
                     .maxAge(60*60*24*15)
                     .build();
@@ -124,7 +156,13 @@ public class AuthController {
             response.addHeader("Set-Cookie",accessCookie.toString());
             response.addHeader("Set-Cookie" , refreshCookie.toString());
             return ResponseEntity.ok("Login successfully");
-        }catch (RuntimeException e){
+        }catch (UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist ");
+        }
+        catch (EmailNotVerifiedException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email not verified");
+        }
+        catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
