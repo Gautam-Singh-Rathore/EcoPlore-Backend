@@ -113,6 +113,7 @@ public class UserService {
         }
     }
 
+
     public Profile getProfile(String username) {
         User user = userRepo.findByEmail(username)
                 .orElseThrow(()-> {
