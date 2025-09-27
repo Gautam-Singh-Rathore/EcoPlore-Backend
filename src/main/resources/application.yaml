@@ -36,6 +36,6 @@ rzp:
   company-name: MyCompany
 
 nimbus:
-  token: ${NIMBUS_TOKEN:Os5ZmY05N1NT3Ck3YQ7uZnDZ}
+  token: ${NIMBUS_TOKEN:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NTg5NjY0ODgsImp0aSI6IlVuVkU3TUhTYktBWk84XC8zRzF4bFJUaldsTTRKdHcwUU5mZmFyQndoVG5jPSIsIm5iZiI6MTc1ODk2NjQ4OCwiZXhwIjoxNzU4OTc3Mjg4LCJkYXRhIjp7InVzZXJfaWQiOiIyMTY5MTIiLCJwYXJlbnRfaWQiOiIwIn19.JIe7kYFtwnNJDWmlXaRQqXdNZHJ4B7UBPvCbg0lyZToxWef8bH1idUssPIpnJSBQez-sWwhzmJeEF9rSXEiQsw}
 
 frontend-url: ${FRONTEND_URL:http://localhost:5173}

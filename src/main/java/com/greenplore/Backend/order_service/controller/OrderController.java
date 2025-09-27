@@ -3,6 +3,7 @@ package com.greenplore.Backend.order_service.controller;
 import com.greenplore.Backend.order_service.dto.CreateOrderDto;
 import com.greenplore.Backend.order_service.dto.PaymentVerificationRequest;
 import com.greenplore.Backend.order_service.service.OrderService;
+import com.greenplore.Backend.order_service.service.ShipmentService;
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
@@ -10,6 +11,7 @@ import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,8 @@ import java.util.Base64;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private ShipmentService shipmentService;
 
     @Value("${rzp.key-id}")
     private String keyId;
@@ -92,5 +96,34 @@ public class OrderController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(orderService.createOrders(user , orderDto.items() , orderDto.addressId()));
+    }
+
+    // get orders by seller
+    @GetMapping("/get/seller")
+    public ResponseEntity getOrdersBySeller(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(orderService.getSellerOrders(user));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to get order details");
+        }
+    }
+
+    // get orders by customer
+    @GetMapping("/get/customer")
+    public ResponseEntity getOrdersByCustomer(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(orderService.getCustomerOrders(user));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to get order details");
+        }
+    }
+
+    @GetMapping("/track/{awb}")
+    public ResponseEntity trackOrder(@PathVariable String awb){
+        return ResponseEntity.status(HttpStatus.OK).body(shipmentService.trackOrderByAwbNumber(awb));
     }
 }

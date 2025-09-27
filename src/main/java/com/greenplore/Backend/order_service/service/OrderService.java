@@ -1,6 +1,7 @@
 package com.greenplore.Backend.order_service.service;
 
 import com.greenplore.Backend.order_service.dto.CartItemResponseDto;
+import com.greenplore.Backend.order_service.dto.OrderResponseDto;
 import com.greenplore.Backend.order_service.dto.ShipmentRequestDto;
 import com.greenplore.Backend.order_service.dto.ShipmentResponseDto;
 import com.greenplore.Backend.order_service.entity.Order;
@@ -11,6 +12,7 @@ import com.greenplore.Backend.product_service.entity.Product;
 import com.greenplore.Backend.product_service.exception.CustomerNotFound;
 import com.greenplore.Backend.product_service.exception.ProductNotFoundException;
 import com.greenplore.Backend.product_service.repo.ProductRepo;
+import com.greenplore.Backend.product_service.service.Mapper;
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import com.greenplore.Backend.user_service.entity.Address;
 import com.greenplore.Backend.user_service.entity.Customer;
@@ -19,6 +21,7 @@ import com.greenplore.Backend.user_service.entity.User;
 import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.repo.AddressRepo;
 import com.greenplore.Backend.user_service.repo.CustomerRepo;
+import com.greenplore.Backend.user_service.repo.SellerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -36,6 +40,8 @@ public class OrderService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
+    private SellerRepo sellerRepo;
+    @Autowired
     private CustomerRepo customerRepo;
     @Autowired
     private AddressRepo addressRepo;
@@ -43,6 +49,8 @@ public class OrderService {
     private ProductRepo productRepo;
     @Autowired
     private OrderItemRepo orderItemRepo;
+    @Autowired
+    private Mapper mapper;
 
     @Transactional
     public String createOrders(UserDetailsImpl user, List<CartItemResponseDto> items, Long addressId) {
@@ -90,50 +98,6 @@ public class OrderService {
         return "Orders created successfully with shipments";
     }
 
-//    private ShipmentRequestDto createShipmentRequest(Product product, int quantity, Customer customer, Address deliverAddress , Seller seller) {
-//        // Create order items
-//        List<ShipmentRequestDto.OrderItem> items = List.of(
-//                ShipmentRequestDto.OrderItem.builder()
-//                        .name(product.getName())
-//                        .qty(String.valueOf(quantity))
-//                        .price(String.valueOf(product.getPrice()))
-//                        .sku("default-sku")
-//                        .build()
-//        );
-//        // Create consignee
-//        ShipmentRequestDto.Consignee consignee = ShipmentRequestDto.Consignee.builder()
-//                .name(customer.getFirstName()+" "+customer.getLastName())
-//                .address(deliverAddress.getStreet())
-//                .address_2(deliverAddress.getCity())
-//                .city(deliverAddress.getCity())
-//                .state(deliverAddress.getState())
-//                .pincode(deliverAddress.getPinCode())
-//                .phone(customer.getMobileNo())
-//                .build();
-//        //Create pickup
-//        ShipmentRequestDto.Pickup pickup = ShipmentRequestDto.Pickup.builder()
-//                .warehouse_name(seller.getCompanyName()+",s Warehouse")
-//                .name(seller.getCompanyName())
-//                .address(seller.getPickUpAddress().getBuildingNo()+" "+seller.getPickUpAddress().getStreet())
-//                .address_2(seller.getPickUpAddress().getLandmark())
-//                .city(seller.getPickUpAddress().getCity())
-//                .state(seller.getPickUpAddress().getState())
-//                .pincode(seller.getPickUpAddress().getPinCode())
-//                .phone(seller.getMobileNo())
-//                .build();
-//        return ShipmentRequestDto.builder()
-//                .order_number(customer.getFirstName()+ String.valueOf(System.currentTimeMillis()))
-//                .payment_type("prepaid")
-//                .order_amount(50+ product.getPrice()*quantity)
-//                .package_breadth(product.getWeight())
-//                .package_height(product.getHeight())
-//                .package_length(product.getLength())
-//                .package_weight(product.getWeight())
-//                .order_items(items)
-//                .consignee(consignee)
-//                .pickup(pickup)
-//                .build();
-//    }
 
     private ShipmentRequestDto createShipmentRequest(Product product, int quantity, Customer customer, Address deliverAddress, Seller seller) {
     // Create order items
@@ -183,4 +147,31 @@ public class OrderService {
             .build();
 }
 
+
+
+    // Get Seller Orders
+    public List<OrderResponseDto> getSellerOrders(UserDetailsImpl user) {
+        User myUser = userRepo.findByEmail(user.getUsername())
+                .orElseThrow(()-> new UserNotFoundException("User not found.."));
+        Seller seller = sellerRepo.findByUser(myUser)
+                .orElseThrow(()-> new CustomerNotFound("Seller not found.."));
+
+        List<Order> orders = orderRepo.findBySeller(seller);
+        return orders.stream()
+                .map(mapper::orderToOrderResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    // Get Customer Orders
+    public List<OrderResponseDto> getCustomerOrders(UserDetailsImpl user) {
+        User myUser = userRepo.findByEmail(user.getUsername())
+                .orElseThrow(()-> new UserNotFoundException("User not found.."));
+        Customer customer = customerRepo.findByUser(myUser)
+                .orElseThrow(()-> new CustomerNotFound("Customer not found.."));
+
+        List<Order> orders = orderRepo.findByCustomer(customer);
+        return orders.stream()
+                .map(mapper::orderToOrderResponseDto)
+                .collect(Collectors.toList());
+    }
 }

@@ -1,8 +1,11 @@
 package com.greenplore.Backend.order_service.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenplore.Backend.order_service.dto.ShipmentRequestDto;
 import com.greenplore.Backend.order_service.dto.ShipmentResponseDto;
+import com.greenplore.Backend.order_service.dto.ShipmentTrackingDto;
+import com.greenplore.Backend.order_service.entity.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -22,7 +25,7 @@ public class ShipmentService {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
     }
-
+    // Create shipment
     public ShipmentResponseDto createShipment(ShipmentRequestDto shipmentRequest) {
         String url = "https://api.nimbuspost.com/v1/shipments";
 
@@ -65,4 +68,101 @@ public class ShipmentService {
             throw new RuntimeException("Error while creating shipment: " + e.getMessage());
         }
     }
+
+    // Track shipment
+    public ShipmentTrackingDto trackOrder(Order order) {
+        String url = "https://api.nimbuspost.com/v1/shipments/track/" + order.getAwbNumber();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(nimbusToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("User-Agent", "YourApp/1.0");
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    String.class
+            );
+
+            System.out.println("Tracking API Response: " + response.getBody());
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                boolean statusFlag = root.path("status").asBoolean();
+
+                if (statusFlag) {
+                    JsonNode data = root.path("data");
+                    String edd = data.path("edd").asText();
+                    String currentStatus = data.path("status").asText();
+
+                    return new ShipmentTrackingDto(edd, currentStatus);
+                } else {
+                    throw new RuntimeException("Nimbuspost tracking API returned status=false");
+                }
+            }
+
+            throw new RuntimeException("Failed to track shipment: " + response.getStatusCode());
+
+        } catch (HttpClientErrorException e) {
+            System.out.println("HTTP Error: " + e.getStatusCode());
+            System.out.println("Error Response: " + e.getResponseBodyAsString());
+            throw new RuntimeException("HTTP Error while tracking shipment: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while tracking shipment: " + e.getMessage());
+        }
+    }
+
+
+    public ShipmentTrackingDto trackOrderByAwbNumber(String awb) {
+        String url = "https://api.nimbuspost.com/v1/shipments/track/" + awb;
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(nimbusToken);
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("User-Agent", "YourApp/1.0");
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    String.class
+            );
+
+            System.out.println("Tracking API Response: " + response.getBody());
+
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+                JsonNode root = objectMapper.readTree(response.getBody());
+                boolean statusFlag = root.path("status").asBoolean();
+
+                if (statusFlag) {
+                    JsonNode data = root.path("data");
+                    String edd = data.path("edd").asText();
+                    String currentStatus = data.path("status").asText();
+
+                    return new ShipmentTrackingDto(edd, currentStatus);
+                } else {
+                    throw new RuntimeException("Nimbuspost tracking API returned status=false");
+                }
+            }
+
+            throw new RuntimeException("Failed to track shipment: " + response.getStatusCode());
+
+        } catch (HttpClientErrorException e) {
+            System.out.println("HTTP Error: " + e.getStatusCode());
+            System.out.println("Error Response: " + e.getResponseBodyAsString());
+            throw new RuntimeException("HTTP Error while tracking shipment: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error while tracking shipment: " + e.getMessage());
+        }
+    }
+
 }

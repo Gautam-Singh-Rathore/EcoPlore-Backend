@@ -1,9 +1,15 @@
 package com.greenplore.Backend.product_service.service;
 
+import com.greenplore.Backend.order_service.dto.OrderResponseDto;
+import com.greenplore.Backend.order_service.dto.ShipmentTrackingDto;
+import com.greenplore.Backend.order_service.entity.Order;
+import com.greenplore.Backend.order_service.service.ShipmentService;
 import com.greenplore.Backend.product_service.dto.*;
 import com.greenplore.Backend.product_service.entity.Category;
 import com.greenplore.Backend.product_service.entity.Product;
 import com.greenplore.Backend.product_service.entity.SubCategory;
+import com.greenplore.Backend.user_service.dto.AddressResponseDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +18,8 @@ import java.util.List;
 @Component
 @Lazy
 public class Mapper {
+    @Autowired
+    private ShipmentService shipmentService;
 
     public CategoryResponse categoryToCategoryResponse(Category category){
         return new CategoryResponse(
@@ -69,6 +77,25 @@ public class Mapper {
                 product.getLength(),
                 product.getWidth(),
                 product.getWeight()
+        );
+    }
+
+    public OrderResponseDto orderToOrderResponseDto(Order order) {
+        ProductCardResponseDto product = productsToProductsCardResponse(order.getProduct());
+        AddressResponseDto deliveryAddress = AddressResponseDto.from(order.getDeliveryAddress());
+        ShipmentTrackingDto shipmentTrackingDto = shipmentService.trackOrder(order);
+        return new OrderResponseDto(
+                order.getId(),
+                product,
+                order.getQuantity(),
+                order.getOrderAmount(),
+                deliveryAddress,
+                order.getAwbNumber(),
+                order.getCourierName(),
+                order.getShipmentLabelUrl(),
+                shipmentTrackingDto.getStatus(),
+                order.getShipmentId(),
+                shipmentTrackingDto.getEdd()
         );
     }
 }
