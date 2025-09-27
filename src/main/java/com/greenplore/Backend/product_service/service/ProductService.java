@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -152,5 +153,18 @@ public class ProductService {
         Product myProduct = productRepo.findById(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found "));
         return mapper.productToEditProductForm(myProduct);
+    }
+
+    public List<ProductCardResponseDto> getSellerProducts(UserDetailsImpl user) {
+        User sellerUser = userRepo.findByEmail(user.getUsername())
+                .orElseThrow(()-> new SellerNotFound("Seller not found for email :"+user.getUsername()));
+        Seller seller = sellerRepo.findByUser(sellerUser)
+                .orElseThrow(()-> new SellerNotFound("Seller not found for email :"+user.getUsername()));
+
+        List<Product> products = productRepo.findBySeller(seller);
+
+        return products.stream()
+                .map(mapper::productsToProductsCardResponse)
+                .collect(Collectors.toList());
     }
 }

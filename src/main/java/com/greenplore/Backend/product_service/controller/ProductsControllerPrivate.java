@@ -31,6 +31,16 @@ public class ProductsControllerPrivate {
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
         return ResponseEntity.ok(productService.addProduct(user , productDto));
     }
+
+    // get seller products
+    @GetMapping("/get-by-seller")
+    public ResponseEntity getSellerProducts(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getSellerProducts(user));
+    }
+
+
     // edit product
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasAuthority('SELLER')")
