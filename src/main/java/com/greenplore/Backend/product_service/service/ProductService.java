@@ -112,4 +112,11 @@ public class ProductService {
                 .map(mapper::productsToProductsCardResponse)
                 .toList();
     }
+
+    public String deleteProduct(UserDetailsImpl user, UUID id) {
+        
+    }
+
+    public String editProduct(UserDetailsImpl user, UUID id, AddProductDto product) {
+    }
 }

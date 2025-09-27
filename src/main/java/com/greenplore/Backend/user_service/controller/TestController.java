@@ -1,8 +1,12 @@
 package com.greenplore.Backend.user_service.controller;
 
 import com.greenplore.Backend.user_service.dto.AddressRequestDto;
+import com.greenplore.Backend.user_service.dto.CustomerProfile;
 import com.greenplore.Backend.user_service.dto.Profile;
+import com.greenplore.Backend.user_service.entity.Seller;
 import com.greenplore.Backend.user_service.service.AddressService;
+import com.greenplore.Backend.user_service.service.CustomerService;
+import com.greenplore.Backend.user_service.service.SellerService;
 import com.greenplore.Backend.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +27,10 @@ public class TestController {
     private UserService userService;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private SellerService sellerService;
 
     @GetMapping("public/hello")
     public String hello(){
@@ -45,6 +53,24 @@ public class TestController {
 
     }
 
+    @GetMapping("private/address/get")
+    public ResponseEntity<?> getUserAddresses(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.getAddresses(user));
+    }
+
+    @PostMapping("/private/address/add")
+    public ResponseEntity<?> addUserAddress(
+            @RequestBody AddressRequestDto addressRequestDto
+            ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.addAddress(user , addressRequestDto));
+    }
+
+    // Get profile (same for seller and buyer)
+
     @GetMapping("private/profile")
     public ResponseEntity<?> getProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -60,20 +86,24 @@ public class TestController {
         }
     }
 
-    @GetMapping("private/address/get")
-    public ResponseEntity<?> getUserAddresses(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(addressService.getAddresses(user));
-    }
-
-    @PostMapping("/private/address/add")
-    public ResponseEntity<?> addUserAddress(
-            @RequestBody AddressRequestDto addressRequestDto
+    // Edit profile for customer
+    @PostMapping("private/profile/edit-customer")
+    public ResponseEntity editCustomerProfile(
+            @RequestBody CustomerProfile profile
             ){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(addressService.addAddress(user , addressRequestDto));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(customerService.editCustomer(user , profile));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong please try again after some time");
+        }
+    }
+
+    // Edit profile for seller
+    @PostMapping("private/profile/edit-seller")
+    public ResponseEntity editSellerProfile(){
+
     }
 
 

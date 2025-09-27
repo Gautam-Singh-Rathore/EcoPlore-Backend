@@ -43,7 +43,7 @@ public class Seller {
     @Embedded
     private SellerBankDetails bankDetails;
 
-    @OneToMany(mappedBy = "seller")
+    @OneToMany(mappedBy = "seller" , cascade = CascadeType.ALL)
     private List<Product> products;
 
 

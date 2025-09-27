@@ -4,12 +4,16 @@ import com.greenplore.Backend.order_service.entity.Cart;
 import com.greenplore.Backend.order_service.entity.Wishlist;
 import com.greenplore.Backend.order_service.repo.CartRepo;
 import com.greenplore.Backend.order_service.repo.WishlistRepo;
+import com.greenplore.Backend.product_service.exception.CustomerNotFound;
+import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
+import com.greenplore.Backend.user_service.dto.CustomerProfile;
 import com.greenplore.Backend.user_service.dto.CustomerSignUpRequest;
 import com.greenplore.Backend.user_service.entity.Customer;
 import com.greenplore.Backend.user_service.entity.User;
 import com.greenplore.Backend.user_service.entity.model.Provider;
 import com.greenplore.Backend.user_service.exception.UserAlreadyPresentException;
 import com.greenplore.Backend.user_service.exception.UserNotCreatedException;
+import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.repo.CustomerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
 
@@ -71,5 +75,20 @@ public class CustomerService {
         }catch (Exception e){
             throw new UserNotCreatedException("User not created error message : "+e.getMessage());
         }
+    }
+
+    @Transactional
+    public String editCustomer(UserDetailsImpl user, CustomerProfile profile) {
+        User myUser = userRepo.findByEmail(user.getUsername())
+                .orElseThrow(()-> new UserNotFoundException("User not found.."));
+        Customer customer = customerRepo.findByUser(myUser)
+                .orElseThrow(()-> new CustomerNotFound("Customer not found.."));
+
+        customer.setFirstName(profile.getFirstName());
+        customer.setLastName(profile.getLastName());
+        customer.setMobileNo(profile.getMobile());
+
+        customerRepo.save(customer);
+        return "Profile Updated";
     }
 }

@@ -15,5 +15,4 @@ public class CustomerProfile implements Profile{
         String mobile ;
         String email ;
         String createdAt;
-
 }
