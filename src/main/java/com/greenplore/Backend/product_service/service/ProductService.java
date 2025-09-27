@@ -147,4 +147,10 @@ public class ProductService {
         productRepo.save(myProduct);
         return "Product edited successfully";
     }
+
+    public AddProductDto getEditProductForm(UUID id) {
+        Product myProduct = productRepo.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found "));
+        return mapper.productToEditProductForm(myProduct);
+    }
 }

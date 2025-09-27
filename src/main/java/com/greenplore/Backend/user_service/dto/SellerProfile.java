@@ -1,5 +1,7 @@
 package com.greenplore.Backend.user_service.dto;
 
+import com.greenplore.Backend.user_service.entity.model.PickUpAddress;
+import com.greenplore.Backend.user_service.entity.model.SellerBankDetails;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +17,8 @@ public class SellerProfile implements Profile {
     String mobile;
     String gst;
     String createdAt;
+    PickUpAddress address;
+    SellerBankDetails bankDetails;
+
 }
 

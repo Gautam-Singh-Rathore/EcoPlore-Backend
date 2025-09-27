@@ -1,8 +1,6 @@
 package com.greenplore.Backend.user_service.controller;
 
-import com.greenplore.Backend.user_service.dto.AddressRequestDto;
-import com.greenplore.Backend.user_service.dto.CustomerProfile;
-import com.greenplore.Backend.user_service.dto.Profile;
+import com.greenplore.Backend.user_service.dto.*;
 import com.greenplore.Backend.user_service.entity.Seller;
 import com.greenplore.Backend.user_service.service.AddressService;
 import com.greenplore.Backend.user_service.service.CustomerService;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
-import com.greenplore.Backend.user_service.dto.MeDetails;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -100,14 +97,19 @@ public class TestController {
         }
     }
 
-    // Edit profile for seller
+
     @PostMapping("private/profile/edit-seller")
-    public ResponseEntity editSellerProfile(){
-
+    public ResponseEntity editSellerProfile(
+            @RequestBody SellerProfile profile
+            ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(sellerService.editSeller(user , profile));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong please try again after some time");
+        }
     }
-
-
-
 
 
 }

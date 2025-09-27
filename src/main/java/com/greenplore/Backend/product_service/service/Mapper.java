@@ -1,9 +1,6 @@
 package com.greenplore.Backend.product_service.service;
 
-import com.greenplore.Backend.product_service.dto.CategoryResponse;
-import com.greenplore.Backend.product_service.dto.ProductCardResponseDto;
-import com.greenplore.Backend.product_service.dto.ProductResponseDto;
-import com.greenplore.Backend.product_service.dto.SubCategoryResponse;
+import com.greenplore.Backend.product_service.dto.*;
 import com.greenplore.Backend.product_service.entity.Category;
 import com.greenplore.Backend.product_service.entity.Product;
 import com.greenplore.Backend.product_service.entity.SubCategory;
@@ -55,6 +52,23 @@ public class Mapper {
                 product.getImageUrls(),
                 product.getSeller().getCompanyName(),
                 product.getSubCategory().getId()
+        );
+    }
+
+    public AddProductDto productToEditProductForm(Product product) {
+        return new AddProductDto(
+                product.getName(),
+                product.getImageUrls(),
+                product.getPrice(),
+                product.getDescription(),
+                product.getNoOfUnits(),
+                product.getDetails(),
+                product.getCategory().getId(),
+                product.getSubCategory().getId(),
+                product.getHeight(),
+                product.getLength(),
+                product.getWidth(),
+                product.getWeight()
         );
     }
 }

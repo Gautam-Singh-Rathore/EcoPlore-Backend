@@ -1,5 +1,8 @@
 package com.greenplore.Backend.user_service.service;
 
+import com.greenplore.Backend.product_service.exception.CustomerNotFound;
+import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
+import com.greenplore.Backend.user_service.dto.SellerProfile;
 import com.greenplore.Backend.user_service.dto.SellerSignUpRequest;
 import com.greenplore.Backend.user_service.entity.Customer;
 import com.greenplore.Backend.user_service.entity.Seller;
@@ -9,6 +12,7 @@ import com.greenplore.Backend.user_service.entity.model.Provider;
 import com.greenplore.Backend.user_service.entity.model.SellerBankDetails;
 import com.greenplore.Backend.user_service.exception.UserAlreadyPresentException;
 import com.greenplore.Backend.user_service.exception.UserNotCreatedException;
+import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.repo.SellerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,5 +76,29 @@ public class SellerService {
         }catch (Exception e){
             throw new UserNotCreatedException("User not created error message : "+e.getMessage());
         }
+    }
+
+    public String editSeller(UserDetailsImpl user, SellerProfile profile) {
+        User myUser = userRepo.findByEmail(user.getUsername())
+                .orElseThrow(()-> new UserNotFoundException("User not found.."));
+        Seller seller = sellerRepo.findByUser(myUser)
+                .orElseThrow(()-> new CustomerNotFound("Seller not found.."));
+
+        seller.setCompanyName(profile.getCompanyName());
+        seller.setMobileNo(profile.getMobile());
+        seller.setGSTNumber(profile.getGst());
+        seller.getPickUpAddress().setBuildingNo(profile.getAddress().getBuildingNo());
+        seller.getPickUpAddress().setStreet(profile.getAddress().getStreet());
+        seller.getPickUpAddress().setLandmark(profile.getAddress().getLandmark());
+        seller.getPickUpAddress().setPinCode(profile.getAddress().getPinCode());
+        seller.getPickUpAddress().setCity(profile.getAddress().getCity());
+        seller.getPickUpAddress().setState(profile.getAddress().getState());
+        seller.getBankDetails().setFullName(profile.getBankDetails().getFullName());
+        seller.getBankDetails().setAccountNo(profile.getBankDetails().getAccountNo());
+        seller.getBankDetails().setIFSCCode(profile.getBankDetails().getIFSCCode());
+
+
+        sellerRepo.save(seller);
+        return "Profile Updated";
     }
 }

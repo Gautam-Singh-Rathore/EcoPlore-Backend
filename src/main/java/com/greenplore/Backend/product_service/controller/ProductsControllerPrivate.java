@@ -47,6 +47,18 @@ public class ProductsControllerPrivate {
         }
 
     }
+
+    //get edit product form
+    @GetMapping("/edit/get-form/{id}")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public ResponseEntity getEditProductForm(@PathVariable UUID id){
+        try{
+            return ResponseEntity.status(HttpStatus.OK).body(productService.getEditProductForm(id));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Something went wrong please try again after some time");
+        }
+    }
+
     // delete product
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('SELLER')")

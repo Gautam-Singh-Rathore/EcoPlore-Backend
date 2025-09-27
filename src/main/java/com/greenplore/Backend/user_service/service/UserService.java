@@ -128,13 +128,15 @@ public class UserService {
                         System.out.println("No seller found for user: ");
                         return new SellerNotFound("Seller not found for email :" + username);
                     });
-
+            System.out.println(seller.getBankDetails());
             return new SellerProfile(
                     username ,
                     seller.getCompanyName(),
                     seller.getMobileNo(),
                     seller.getGSTNumber(),
-                    user.getCreatedAt().toString()
+                    user.getCreatedAt().toString(),
+                    seller.getPickUpAddress(),
+                    seller.getBankDetails()
             );
         }else if ("CUSTOMER".equals(user.getRole())){
             Customer cust = customerRepo.findByUser(user)
