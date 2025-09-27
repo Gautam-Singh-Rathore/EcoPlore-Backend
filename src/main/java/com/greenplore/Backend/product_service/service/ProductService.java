@@ -16,6 +16,7 @@ import com.greenplore.Backend.product_service.repo.SubCategoryRepo;
 import com.greenplore.Backend.user_service.auth.UserDetailsImpl;
 import com.greenplore.Backend.user_service.entity.Seller;
 import com.greenplore.Backend.user_service.entity.User;
+import com.greenplore.Backend.user_service.exception.UserNotFoundException;
 import com.greenplore.Backend.user_service.repo.SellerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,10 +114,37 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional
     public String deleteProduct(UserDetailsImpl user, UUID id) {
-        
+        Product product = productRepo.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found "));
+        productRepo.deleteById(id);
+        return "Product deleted";
     }
 
+    @Transactional
     public String editProduct(UserDetailsImpl user, UUID id, AddProductDto product) {
+        Product myProduct = productRepo.findById(id)
+                .orElseThrow(()-> new ProductNotFoundException("Product not found "));
+        Category category = categoryRepo.findById(product.categoryId())
+                        .orElseThrow(()-> new CategoryNotFound("Category Not Found"));
+        SubCategory subCategory = subCategoryRepo.findById(product.subCategoryId())
+                        .orElseThrow(()-> new SubCategoryNotFound("Sub Category Not Found"));
+
+        myProduct.setName(product.name());
+        myProduct.setImageUrls(product.imageUrls());
+        myProduct.setPrice(product.price());
+        myProduct.setDescription(product.description());
+        myProduct.setNoOfUnits(product.noOfUnits());
+        myProduct.setDetails(product.details());
+        myProduct.setCategory(category);
+        myProduct.setSubCategory(subCategory);
+        myProduct.setHeight(product.height());
+        myProduct.setLength(product.length());
+        myProduct.setWidth(product.width());
+        myProduct.setWeight(product.weight());
+
+        productRepo.save(myProduct);
+        return "Product edited successfully";
     }
 }

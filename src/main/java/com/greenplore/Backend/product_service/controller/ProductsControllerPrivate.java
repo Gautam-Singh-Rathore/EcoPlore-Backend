@@ -33,6 +33,7 @@ public class ProductsControllerPrivate {
     }
     // edit product
     @PostMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity editProduct(
             @PathVariable UUID id,
             @RequestBody AddProductDto product
@@ -48,6 +49,7 @@ public class ProductsControllerPrivate {
     }
     // delete product
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity deleteProduct(@PathVariable UUID id){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
