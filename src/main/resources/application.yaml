@@ -36,8 +36,7 @@ rzp:
   company-name: MyCompany
 
 nimbus:
-  token: ${NIMBUS_TOKEN:demo}
-  username: ${NIMBUS_USERNAME:demo}
-  password: ${NIMBUS_PASSWORD:demo}
+  username: ${NIMBUS_USERNAME:infogreenplore@gmail.com}
+  password: ${NIMBUS_PASSWORD:Delhi@gp_12}
 
 frontend-url: ${FRONTEND_URL:http://localhost:5173}

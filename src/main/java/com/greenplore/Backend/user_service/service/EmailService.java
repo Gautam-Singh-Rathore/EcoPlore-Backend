@@ -1,5 +1,6 @@
 package com.greenplore.Backend.user_service.service;
 
+import com.greenplore.Backend.order_service.entity.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,5 +21,9 @@ public class EmailService {
         message.setFrom("noreply@greenplore.com");
 
         mailSender.send(message);
+    }
+
+    public void sendOrderMail(Order newOrder) {
+
     }
 }

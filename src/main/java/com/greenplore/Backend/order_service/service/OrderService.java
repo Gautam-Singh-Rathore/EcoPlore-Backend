@@ -23,6 +23,7 @@ import com.greenplore.Backend.user_service.repo.AddressRepo;
 import com.greenplore.Backend.user_service.repo.CustomerRepo;
 import com.greenplore.Backend.user_service.repo.SellerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
+import com.greenplore.Backend.user_service.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +52,8 @@ public class OrderService {
     private OrderItemRepo orderItemRepo;
     @Autowired
     private Mapper mapper;
+    @Autowired
+    private EmailService emailService;
 
     @Transactional
     public String createOrders(UserDetailsImpl user, List<CartItemResponseDto> items, Long addressId) {
@@ -73,9 +76,7 @@ public class OrderService {
                     .orderAmount(50+ product.getPrice()* item.quantity())
                     .deliveryAddress(deliverAddress)
                     .build();
-            // Decrease the quantity when order is made
-            product.setNoOfUnits(product.getNoOfUnits()- newOrder.getQuantity());
-            productRepo.save(product);
+
             // Create Shipment
             try {
                 ShipmentRequestDto shipmentRequest = createShipmentRequest(product,item.quantity() , customer , deliverAddress , product.getSeller());
@@ -90,10 +91,18 @@ public class OrderService {
                 }
                 Order savedOrder = orderRepo.save(newOrder);
                 createdOrders.add(savedOrder);
+
+                // Decrease the quantity when order is made
+                product.setNoOfUnits(product.getNoOfUnits()- newOrder.getQuantity());
+                productRepo.save(product);
+
+                // Send email for created order to seller and customer
+                emailService.sendOrderMail(newOrder);
             }catch (Exception e){
                 throw new RuntimeException("Failed to create shipment for order: " + e.getMessage());
             }
         }
+
         // empty the cart
         for(CartItemResponseDto item : items){
             orderItemRepo.deleteById(item.cartItemId());
@@ -177,4 +186,6 @@ public class OrderService {
                 .map(mapper::orderToOrderResponseDto)
                 .collect(Collectors.toList());
     }
+
+
 }
