@@ -11,4 +11,5 @@ public record ProductCardResponseDto(
         String description,
         String subCategoryName
 ) {
+
 }

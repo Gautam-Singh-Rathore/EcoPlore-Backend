@@ -6,6 +6,7 @@ import com.greenplore.Backend.order_service.dto.ShipmentRequestDto;
 import com.greenplore.Backend.order_service.dto.ShipmentResponseDto;
 import com.greenplore.Backend.order_service.dto.ShipmentTrackingDto;
 import com.greenplore.Backend.order_service.entity.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class ShipmentService {
 
-    @Value("${nimbus.token}")
-    private String nimbusToken;
+    @Autowired
+    private NimbusTokenService tokenService;
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -36,7 +37,7 @@ public class ShipmentService {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(nimbusToken);
+            headers.setBearerAuth(tokenService.getToken());
             headers.add("User-Agent", "YourApp/1.0");
 
             HttpEntity<ShipmentRequestDto> request = new HttpEntity<>(shipmentRequest, headers);
@@ -75,7 +76,7 @@ public class ShipmentService {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(nimbusToken);
+            headers.setBearerAuth(tokenService.getToken());
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.add("User-Agent", "YourApp/1.0");
 
@@ -123,7 +124,7 @@ public class ShipmentService {
 
         try {
             HttpHeaders headers = new HttpHeaders();
-            headers.setBearerAuth(nimbusToken);
+            headers.setBearerAuth(tokenService.getToken());
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.add("User-Agent", "YourApp/1.0");
 

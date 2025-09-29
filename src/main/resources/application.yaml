@@ -2,7 +2,7 @@ spring:
   application:
     name: Backend
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/greenplore}
+    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/greenplore}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:anilsa3omsa}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -30,12 +30,14 @@ logging:
     root: info
 
 rzp:
-  key-id: ${RZP_KEY_ID:rzp_live_RCemjVt0zfY8v2}           # Use environment variable
-  key-secret: ${RZP_KEY_SECRET:Os5ZmY05N1NT3Ck3YQ7uZnDZ}   # Use environment variable
+  key-id: ${RZP_KEY_ID:demo}           # Use environment variable
+  key-secret: ${RZP_KEY_SECRET:demo}   # Use environment variable
   currency: INR
   company-name: MyCompany
 
 nimbus:
-  token: ${NIMBUS_TOKEN:eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE3NTg5NjY0ODgsImp0aSI6IlVuVkU3TUhTYktBWk84XC8zRzF4bFJUaldsTTRKdHcwUU5mZmFyQndoVG5jPSIsIm5iZiI6MTc1ODk2NjQ4OCwiZXhwIjoxNzU4OTc3Mjg4LCJkYXRhIjp7InVzZXJfaWQiOiIyMTY5MTIiLCJwYXJlbnRfaWQiOiIwIn19.JIe7kYFtwnNJDWmlXaRQqXdNZHJ4B7UBPvCbg0lyZToxWef8bH1idUssPIpnJSBQez-sWwhzmJeEF9rSXEiQsw}
+  token: ${NIMBUS_TOKEN:demo}
+  username: ${NIMBUS_USERNAME:demo}
+  password: ${NIMBUS_PASSWORD:demo}
 
 frontend-url: ${FRONTEND_URL:http://localhost:5173}

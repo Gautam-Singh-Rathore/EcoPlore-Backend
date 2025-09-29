@@ -10,6 +10,7 @@ import com.greenplore.Backend.product_service.repo.SubCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -32,13 +33,18 @@ public class CategoryService {
     }
 
     public List<SubCategoryResponse> findSubCategoryByCategoryId(Long id) {
-        Category category = categoryRepo.findById(id)
-                .orElseThrow(()-> new CategoryNotFound("Category not found for id: "+id
-                ));
-        List<SubCategory> subCategories = subCategoryRepo.findByCategory(category);
+        List<SubCategory> subCategories = subCategoryRepo.findAll();
         return subCategories.stream()
+                .filter((var sub)-> sub.getCategory().getId()==id )
                 .map(mapper::subCategoryToSubCategoryResponse)
                 .toList();
+//        Category category = categoryRepo.findById(id)
+//                .orElseThrow(()-> new CategoryNotFound("Category not found for id: "+id
+//                ));
+//        List<SubCategory> subCategories = subCategoryRepo.findByCategory(category);
+//        return subCategories.stream()
+//                .map(mapper::subCategoryToSubCategoryResponse)
+//                .toList();
     }
 
     public List<SubCategoryResponse> findAllSubCategories() {

@@ -73,6 +73,9 @@ public class OrderService {
                     .orderAmount(50+ product.getPrice()* item.quantity())
                     .deliveryAddress(deliverAddress)
                     .build();
+            // Decrease the quantity when order is made
+            product.setNoOfUnits(product.getNoOfUnits()- newOrder.getQuantity());
+            productRepo.save(product);
             // Create Shipment
             try {
                 ShipmentRequestDto shipmentRequest = createShipmentRequest(product,item.quantity() , customer , deliverAddress , product.getSeller());

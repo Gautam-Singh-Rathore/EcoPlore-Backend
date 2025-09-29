@@ -2,6 +2,7 @@ package com.greenplore.Backend.product_service.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class SubCategory {
 
     @Id
@@ -23,6 +25,6 @@ public class SubCategory {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "subCategory")
+    @OneToMany(mappedBy = "subCategory",cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Product> products;
 }
