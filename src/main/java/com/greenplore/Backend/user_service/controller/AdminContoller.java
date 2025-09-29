@@ -5,6 +5,7 @@ import com.greenplore.Backend.product_service.entity.Category;
 import com.greenplore.Backend.product_service.entity.SubCategory;
 import com.greenplore.Backend.product_service.exception.CategoryNotFound;
 import com.greenplore.Backend.product_service.repo.CategoryRepo;
+import com.greenplore.Backend.product_service.repo.ProductRepo;
 import com.greenplore.Backend.product_service.repo.SubCategoryRepo;
 import com.greenplore.Backend.product_service.service.Mapper;
 import com.greenplore.Backend.user_service.dto.AddSubCategoryDto;
@@ -33,6 +34,8 @@ public class AdminContoller {
     private CategoryRepo categoryRepo;
     @Autowired
     private SubCategoryRepo subCategoryRepo;
+    @Autowired
+    private ProductRepo productRepo;
 
     // get all sellers
 //    @PreAuthorize("hasAuthority('ADMIN')")
@@ -150,5 +153,13 @@ public class AdminContoller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Subcategory not deleted");
         }
+    }
+
+    // count the no of products
+    @GetMapping("/products/count")
+    public ResponseEntity countOfProducts(){
+        return ResponseEntity.status(HttpStatus.OK).body(
+            productRepo.count()
+        );
     }
 }
