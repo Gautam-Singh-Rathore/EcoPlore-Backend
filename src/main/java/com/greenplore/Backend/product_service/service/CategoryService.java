@@ -25,7 +25,7 @@ public class CategoryService {
 
 
     public List<CategoryResponse> findAllCategory() {
-        List<Category> categories = categoryRepo.findAll();
+        List<Category> categories = categoryRepo.findAllByIsDeletedFalse();
         return categories.stream()
                 .map(mapper::categoryToCategoryResponse)
                 .toList();
@@ -33,7 +33,7 @@ public class CategoryService {
     }
 
     public List<SubCategoryResponse> findSubCategoryByCategoryId(Long id) {
-        List<SubCategory> subCategories = subCategoryRepo.findAll();
+        List<SubCategory> subCategories = subCategoryRepo.findAllByIsDeletedFalse();
         return subCategories.stream()
                 .filter((var sub)-> sub.getCategory().getId()==id )
                 .map(mapper::subCategoryToSubCategoryResponse)
@@ -48,7 +48,7 @@ public class CategoryService {
     }
 
     public List<SubCategoryResponse> findAllSubCategories() {
-        List<SubCategory> subCategories = subCategoryRepo.findAll();
+        List<SubCategory> subCategories = subCategoryRepo.findAllByIsDeletedFalse();
         return subCategories.stream()
                 .map(mapper::subCategoryToSubCategoryResponse)
                 .toList();

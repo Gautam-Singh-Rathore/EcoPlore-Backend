@@ -66,7 +66,7 @@ public class OrderService {
                 .orElseThrow(()-> new RuntimeException("Address not found"));
         for(CartItemResponseDto item : items){
             // Create Order
-            Product product = productRepo.findById(item.productId())
+            Product product = productRepo.findByIdAndIsDeletedFalse(item.productId())
                     .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
             Order newOrder = Order.builder()
                     .product(product)

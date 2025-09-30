@@ -44,7 +44,7 @@ public class CartService {
 
         Cart custCart = cartRepo.findByCustomer(customer);
 
-        Product product = productRepo.findById(item.id())
+        Product product = productRepo.findByIdAndIsDeletedFalse(item.id())
                 .orElseThrow(()-> new ProductNotFoundException("Product Not Found"));
 
         OrderItem orderItem = OrderItem.builder()
@@ -65,7 +65,7 @@ public class CartService {
         Customer customer = customerRepo.findByUser(custUser)
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
         Cart custCart = cartRepo.findByCustomer(customer);
-        Product product = productRepo.findById(productId)
+        Product product = productRepo.findByIdAndIsDeletedFalse(productId)
                 .orElseThrow(()-> new ProductNotFoundException("Product Not Found"));
         return orderItemRepo.existsByCartAndProduct(custCart,product);
     }
@@ -78,7 +78,7 @@ public class CartService {
         Customer customer = customerRepo.findByUser(custUser)
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
         Cart custCart = cartRepo.findByCustomer(customer);
-        Product product = productRepo.findById(item.id())
+        Product product = productRepo.findByIdAndIsDeletedFalse(item.id())
                 .orElseThrow(() -> new ProductNotFoundException("Product Not Found"));
 
         OrderItem orderItem = orderItemRepo.findByCartAndProduct(custCart, product)
@@ -99,6 +99,7 @@ public class CartService {
 
         List<OrderItem> orderItems = custCart.getItems();
         List<CartItemResponseDto> responseDtos = orderItems.stream()
+                .filter((var orderItem)-> orderItem.getProduct().isDeleted()==false)
                 .map(orderItem -> CartItemResponseDto.from(orderItem.getId(),orderItem.getProduct() , orderItem.getQuantity()))
                 .collect(Collectors.toList());
         return responseDtos;

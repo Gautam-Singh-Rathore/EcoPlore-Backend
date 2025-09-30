@@ -12,12 +12,14 @@ import java.util.UUID;
 
 public interface ProductRepo extends JpaRepository<Product , UUID> {
     
-    Optional<List<Product>> findByCategory(Category category);
+    Optional<List<Product>> findByCategoryAndIsDeletedFalse(Category category);
 
-    Optional<List<Product>> findBySubCategory(SubCategory subCategory);
+    Optional<List<Product>> findBySubCategoryAndIsDeletedFalse(SubCategory subCategory);
 
-    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String name, String name1);
+    List<Product> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndIsDeletedFalse(String name, String name1);
 
-    List<Product> findBySeller(Seller seller);
+    List<Product> findBySellerAndIsDeletedFalse(Seller seller);
+
+    Optional<Product> findByIdAndIsDeletedFalse(UUID id);
 
 }

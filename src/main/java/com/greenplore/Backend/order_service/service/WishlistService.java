@@ -37,7 +37,7 @@ public class WishlistService {
                 .orElseThrow(()-> new UserNotFoundException("User not found for email "+user.getUsername()));
         Customer customer = customerRepo.findByUser(custUser)
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
-        Product product = productRepo.findById(id)
+        Product product = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product Not Found"));
         Wishlist wishlist = wishlistRepo.findByCustomer(customer);
         wishlist.getProducts().add(product);
@@ -50,7 +50,7 @@ public class WishlistService {
                 .orElseThrow(()-> new UserNotFoundException("User not found for email "+user.getUsername()));
         Customer customer = customerRepo.findByUser(custUser)
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
-        Product product = productRepo.findById(id)
+        Product product = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product Not Found"));
         Wishlist wishlist = wishlistRepo.findByCustomer(customer);
         if(wishlist.getProducts().contains(product)) return true;
@@ -62,7 +62,7 @@ public class WishlistService {
                 .orElseThrow(()-> new UserNotFoundException("User not found for email "+user.getUsername()));
         Customer customer = customerRepo.findByUser(custUser)
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
-        Product product = productRepo.findById(id)
+        Product product = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product Not Found"));
         Wishlist wishlist = wishlistRepo.findByCustomer(customer);
         wishlist.getProducts().remove(product);
@@ -77,8 +77,10 @@ public class WishlistService {
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
 
         Wishlist wishlist = wishlistRepo.findByCustomer(customer);
+
         List<ProductCardResponseDto> list = wishlist.getProducts()
                 .stream()
+                .filter((var product )-> product.isDeleted()==false)
                 .map(mapper::productsToProductsCardResponse)
                 .collect(Collectors.toList());
         return list;

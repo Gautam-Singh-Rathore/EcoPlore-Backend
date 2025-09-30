@@ -27,4 +27,7 @@ public class SubCategory {
 
     @OneToMany(mappedBy = "subCategory",cascade = CascadeType.ALL , orphanRemoval = true)
     private List<Product> products;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

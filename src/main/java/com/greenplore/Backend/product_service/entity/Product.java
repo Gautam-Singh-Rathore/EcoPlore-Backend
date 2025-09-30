@@ -1,6 +1,7 @@
 package com.greenplore.Backend.product_service.entity;
 
 import com.greenplore.Backend.user_service.entity.Seller;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,6 +52,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "seller_id")
     private Seller seller;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     private Integer height;
     private Integer length;

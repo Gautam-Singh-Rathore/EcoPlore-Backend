@@ -2,8 +2,10 @@ package com.greenplore.Backend.user_service.controller;
 
 import com.greenplore.Backend.order_service.repo.OrderRepo;
 import com.greenplore.Backend.product_service.entity.Category;
+import com.greenplore.Backend.product_service.entity.Product;
 import com.greenplore.Backend.product_service.entity.SubCategory;
 import com.greenplore.Backend.product_service.exception.CategoryNotFound;
+import com.greenplore.Backend.product_service.exception.SubCategoryNotFound;
 import com.greenplore.Backend.product_service.repo.CategoryRepo;
 import com.greenplore.Backend.product_service.repo.ProductRepo;
 import com.greenplore.Backend.product_service.repo.SubCategoryRepo;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -108,11 +111,20 @@ public class AdminContoller {
 
     // delete category
     @DeleteMapping("delete-category/{id}")
+    @Transactional
     public ResponseEntity deleteCategory(
             @PathVariable Long id
     ){
         try {
-            categoryRepo.deleteById(id);
+            Category category = categoryRepo.findById(id)
+                    .orElseThrow(()-> new RuntimeException("Category Not Found"));
+            // set is deleted true for the category
+            category.setDeleted(true);
+            categoryRepo.save(category);
+            // cascade delet to all the sub categories
+            for(SubCategory subCategory : category.getSubCategories()){
+                deleteSubCategory(subCategory.getId());
+            }
             return ResponseEntity.ok("Category deleted");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -126,7 +138,7 @@ public class AdminContoller {
             @RequestBody AddSubCategoryDto addSubCategoryDto
             ){
         try{
-            Category category = categoryRepo.findById(addSubCategoryDto.categoryId())
+            Category category = categoryRepo.findByIdAndIsDeletedFalse(addSubCategoryDto.categoryId())
                     .orElseThrow(()-> new CategoryNotFound("Category Not Found"));
             SubCategory subCategory = SubCategory.builder()
                     .name(addSubCategoryDto.name())
@@ -143,11 +155,21 @@ public class AdminContoller {
 
     // delete sub-category
     @DeleteMapping("delete-subcategory/{id}")
+    @Transactional
     public ResponseEntity deleteSubCategory(
             @PathVariable Long id
     ){
         try {
-            subCategoryRepo.deleteById(id);
+            SubCategory subCategory = subCategoryRepo.findById(id)
+                    .orElseThrow(()-> new SubCategoryNotFound("Subcategory not found"));
+            // set is deleted true in the subcategory
+            subCategory.setDeleted(true);
+            subCategoryRepo.save(subCategory);
+            // set is deleted true for all the subsequent products
+            for(Product product: subCategory.getProducts()){
+                product.setDeleted(true);
+                productRepo.save(product);
+            }
             return ResponseEntity.ok("Subcategory deleted");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)

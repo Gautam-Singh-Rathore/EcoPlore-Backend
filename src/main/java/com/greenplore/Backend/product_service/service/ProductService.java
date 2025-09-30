@@ -83,7 +83,7 @@ public class ProductService {
     public List<ProductCardResponseDto> getProductsByCategory(Long categoryId) {
         Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(()-> new CategoryNotFound("Category not found for id :"+categoryId));
-        List<Product> products = productRepo.findByCategory(category)
+        List<Product> products = productRepo.findByCategoryAndIsDeletedFalse(category)
                 .orElseThrow(()-> new ProductNotFoundException("Products not found for category "+category.getName()));
         return products
                  .stream()
@@ -94,7 +94,7 @@ public class ProductService {
     public List<ProductCardResponseDto> getProductsBySubCategory(Long subCategoryId) {
         SubCategory subCategory = subCategoryRepo.findById(subCategoryId)
                 .orElseThrow(()-> new SubCategoryNotFound("Sub Category Not found for id :"+subCategoryId));
-        List<Product> products = productRepo.findBySubCategory(subCategory)
+        List<Product> products = productRepo.findBySubCategoryAndIsDeletedFalse(subCategory)
                 .orElseThrow(()-> new ProductNotFoundException("Products not found for sub-category "+subCategory.getName()));
         return products
                 .stream()
@@ -103,13 +103,13 @@ public class ProductService {
     }
 
     public ProductResponseDto getProductById(UUID id) {
-        Product product = productRepo.findById(id)
+        Product product = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Products not found for id "+id));
         return mapper.productToProductResponse(product);
     }
 
     public List<ProductCardResponseDto> searchProduct(String name) {
-        List<Product> products = productRepo.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(name,name);
+        List<Product> products = productRepo.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndIsDeletedFalse(name,name);
         return products.stream()
                 .map(mapper::productsToProductsCardResponse)
                 .toList();
@@ -117,15 +117,17 @@ public class ProductService {
 
     @Transactional
     public String deleteProduct(UserDetailsImpl user, UUID id) {
-        Product product = productRepo.findById(id)
+        Product product = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found "));
-        productRepo.deleteById(id);
+        product.setDeleted(true);
+        productRepo.save(product);
+//        productRepo.deleteById(id);
         return "Product deleted";
     }
 
     @Transactional
     public String editProduct(UserDetailsImpl user, UUID id, AddProductDto product) {
-        Product myProduct = productRepo.findById(id)
+        Product myProduct = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found "));
         Category category = categoryRepo.findById(product.categoryId())
                         .orElseThrow(()-> new CategoryNotFound("Category Not Found"));
@@ -150,7 +152,7 @@ public class ProductService {
     }
 
     public AddProductDto getEditProductForm(UUID id) {
-        Product myProduct = productRepo.findById(id)
+        Product myProduct = productRepo.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(()-> new ProductNotFoundException("Product not found "));
         return mapper.productToEditProductForm(myProduct);
     }
@@ -161,7 +163,7 @@ public class ProductService {
         Seller seller = sellerRepo.findByUser(sellerUser)
                 .orElseThrow(()-> new SellerNotFound("Seller not found for email :"+user.getUsername()));
 
-        List<Product> products = productRepo.findBySeller(seller);
+        List<Product> products = productRepo.findBySellerAndIsDeletedFalse(seller);
 
         return products.stream()
                 .map(mapper::productsToProductsCardResponse)
