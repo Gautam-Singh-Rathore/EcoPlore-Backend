@@ -1,5 +1,6 @@
 package com.greenplore.Backend.order_service.controller;
 
+import com.greenplore.Backend.order_service.dto.CartItemResponseDto;
 import com.greenplore.Backend.order_service.dto.CreateOrderDto;
 import com.greenplore.Backend.order_service.dto.PaymentVerificationRequest;
 import com.greenplore.Backend.order_service.service.OrderService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/private/order")
@@ -34,6 +36,13 @@ public class OrderController {
 
     @Value("${rzp.key-secret}")
     private String secret;
+
+    @PostMapping("/check")
+    public ResponseEntity checkOrderQuantity(
+            @RequestBody List<CartItemResponseDto> items
+    ){
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.checkOrderQuantity(items));
+    }
 
     @GetMapping("/payment/{amount}")
     public String Payment(@PathVariable String amount) throws RazorpayException {

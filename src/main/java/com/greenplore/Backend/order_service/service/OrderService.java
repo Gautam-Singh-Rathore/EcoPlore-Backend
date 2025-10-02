@@ -24,11 +24,13 @@ import com.greenplore.Backend.user_service.repo.CustomerRepo;
 import com.greenplore.Backend.user_service.repo.SellerRepo;
 import com.greenplore.Backend.user_service.repo.UserRepo;
 import com.greenplore.Backend.user_service.service.EmailService;
+import netscape.javascript.JSObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,30 @@ public class OrderService {
     private Mapper mapper;
     @Autowired
     private EmailService emailService;
+
+    public HashMap<String , String> checkOrderQuantity(List<CartItemResponseDto> items ){
+        for(CartItemResponseDto item : items){
+            if(productRepo.findById(item.productId()).isPresent()){
+                Product product = productRepo.findById(item.productId()).get();
+                if(product.getNoOfUnits() < item.quantity()){
+                    HashMap<String , String> response = new HashMap<>();
+                    response.put("status" , "false");
+                    response.put("msg" , item.productName()+" has only "+product.getNoOfUnits()+" units available" );
+                    return  response;
+                }
+            }else{
+                HashMap<String , String> response = new HashMap<>();
+                response.put("status" , "false");
+                response.put("msg" , item.productName()+" no longer exist. Please remove it from the cart to place your order" );
+                return  response;
+            }
+//
+        }
+        HashMap<String , String> response = new HashMap<>();
+        response.put("status" , "true");
+        response.put("msg" , "Good to go " );
+        return  response;
+    }
 
     @Transactional
     public String createOrders(UserDetailsImpl user, List<CartItemResponseDto> items, Long addressId) {
