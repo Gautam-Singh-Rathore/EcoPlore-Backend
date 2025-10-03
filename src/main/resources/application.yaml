@@ -2,9 +2,9 @@ spring:
   application:
     name: Backend
   datasource:
-    url: ${DB_URL:jdbc:mysql://127.0.0.1:3306/greenplore}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:anilsa3omsa}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -30,13 +30,13 @@ logging:
     root: info
 
 rzp:
-  key-id: ${RZP_KEY_ID:demo}           # Use environment variable
-  key-secret: ${RZP_KEY_SECRET:demo}   # Use environment variable
+  key-id: rzp_live_RCemjVt0zfY8v2          # Use environment variable
+  key-secret: Os5ZmY05N1NT3Ck3YQ7uZnDZ   # Use environment variable
   currency: INR
   company-name: MyCompany
 
 nimbus:
-  username: ${NIMBUS_USERNAME:infogreenplore@gmail.com}
-  password: ${NIMBUS_PASSWORD:Delhi@gp_12}
+  username: infogreenplore@gmail.com
+  password: Delhi@gp_12
 
 frontend-url: ${FRONTEND_URL:http://localhost:5173}

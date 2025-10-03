@@ -85,7 +85,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String newAccessToken = jwtService.generateToken(username);
                 Cookie newAccessCookie = new Cookie("accessToken",newAccessToken);
                 newAccessCookie.setHttpOnly(true);
-//                newAccessCookie.setSecure(true);
+                newAccessCookie.setSecure(true);
                 newAccessCookie.setPath("/");
                 newAccessCookie.setMaxAge(60*60);
                 response.addCookie(newAccessCookie);

@@ -108,18 +108,18 @@ public class AuthController {
         // remove the accessCookie
         ResponseCookie accessCookie = ResponseCookie.from("accessToken" , null)
                 .httpOnly(true)
-//                .secure(true)
-//                .sameSite("None")
-                .sameSite("Lax")
+                .secure(true)
+                .sameSite("None")
+//                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
                 .build();
         // remove the refreshCookie
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken"  , null)
                 .httpOnly(true)
-//                .secure(true)
-//                .sameSite("None")
-                .sameSite("Lax")
+                .secure(true)
+                .sameSite("None")
+//                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
                 .build();
@@ -137,18 +137,18 @@ public class AuthController {
             System.out.println(responseDto);
             ResponseCookie accessCookie = ResponseCookie.from("accessToken" , responseDto.accessToken())
                     .httpOnly(true)
-//                .secure(true)
-//                .sameSite("None")
-                    .sameSite("Lax")
+                .secure(true)
+                .sameSite("None")
+//                    .sameSite("Lax")
                     .path("/")
                     .maxAge(60*60)
                     .build();
 
             ResponseCookie refreshCookie = ResponseCookie.from("refreshToken"  , responseDto.refreshToken())
                     .httpOnly(true)
-//                .secure(true)
-//                .sameSite("None")
-                    .sameSite("Lax")
+                .secure(true)
+                .sameSite("None")
+//                    .sameSite("Lax")
                     .path("/")
                     .maxAge(60*60*24*15)
                     .build();
