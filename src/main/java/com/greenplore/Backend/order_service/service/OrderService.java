@@ -109,11 +109,11 @@ public class OrderService {
                 ShipmentResponseDto shipmentResponse = shipmentService.createShipment(shipmentRequest);
                 if (shipmentResponse.getStatus() && shipmentResponse.getData() != null) {
                     ShipmentResponseDto.ShipmentData data = shipmentResponse.getData();
-                    newOrder.setAwbNumber(data.getAwbNumber());
-                    newOrder.setCourierName(data.getCourierName());
+                    newOrder.setAwbNumber(data.getAwb_number());
+                    newOrder.setCourierName(data.getCourier_name());
                     newOrder.setShipmentLabelUrl(data.getLabel());
                     newOrder.setShipmentStatus(data.getStatus());
-                    newOrder.setShipmentId(data.getShipmentId());
+                    newOrder.setShipmentId(data.getShipment_id());
                 }
                 Order savedOrder = orderRepo.save(newOrder);
                 createdOrders.add(savedOrder);

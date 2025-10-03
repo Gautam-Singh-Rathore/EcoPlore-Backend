@@ -10,34 +10,24 @@ public class ShipmentResponseDto {
 
     @Data
     public static class ShipmentData {
-        @JsonProperty("order_id")
-        private Long orderId;
+        private Long order_id;
 
-        @JsonProperty("shipment_id")
-        private Long shipmentId;
+        private Long shipment_id;
 
-        @JsonProperty("awb_number")
-        private String awbNumber;
+        private String awb_number;
 
-        @JsonProperty("courier_id")
-        private String courierId;
+        private String courier_id;
 
-        @JsonProperty("courier_name")
-        private String courierName;
+        private String courier_name;
 
-        @JsonProperty("status")
         private String status;
 
-        @JsonProperty("additional_info")
-        private String additionalInfo;
+        private String additional_info;
 
-        @JsonProperty("payment_type")
-        private String paymentType;
+        private String payment_type;
 
-        @JsonProperty("label")
         private String label;
 
-        @JsonProperty("manifest")
         private String manifest;
     }
 }

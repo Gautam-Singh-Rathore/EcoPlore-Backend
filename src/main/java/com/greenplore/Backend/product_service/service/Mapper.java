@@ -1,6 +1,7 @@
 package com.greenplore.Backend.product_service.service;
 
 import com.greenplore.Backend.order_service.dto.OrderResponseDto;
+import com.greenplore.Backend.order_service.dto.OrderResponseDtoAdmin;
 import com.greenplore.Backend.order_service.dto.ShipmentTrackingDto;
 import com.greenplore.Backend.order_service.entity.Order;
 import com.greenplore.Backend.order_service.service.ShipmentService;
@@ -77,6 +78,26 @@ public class Mapper {
                 product.getLength(),
                 product.getWidth(),
                 product.getWeight()
+        );
+    }
+
+    public OrderResponseDtoAdmin orderToOrderResponseDtoAdmin(Order order){
+        ProductCardResponseDto product = productsToProductsCardResponse(order.getProduct());
+        AddressResponseDto deliveryAddress = AddressResponseDto.from(order.getDeliveryAddress());
+        ShipmentTrackingDto shipmentTrackingDto = shipmentService.trackOrder(order);
+        return new OrderResponseDtoAdmin(
+                order.getId(),
+                product,
+                order.getQuantity(),
+                order.getOrderAmount(),
+                deliveryAddress,
+                order.getAwbNumber(),
+                order.getCourierName(),
+                order.getShipmentLabelUrl(),
+                shipmentTrackingDto.getStatus(),
+                order.getShipmentId(),
+                shipmentTrackingDto.getEdd(),
+                order.getSeller().getUser().getEmail()
         );
     }
 

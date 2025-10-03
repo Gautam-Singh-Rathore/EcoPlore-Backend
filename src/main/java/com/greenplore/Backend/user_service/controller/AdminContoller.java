@@ -86,7 +86,7 @@ public class AdminContoller {
     public ResponseEntity getAllOrders(){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(orderRepo.findAll().stream()
-                        .map(mapper::orderToOrderResponseDto)
+                        .map(mapper::orderToOrderResponseDtoAdmin)
                         .toList()
                 );
     }
