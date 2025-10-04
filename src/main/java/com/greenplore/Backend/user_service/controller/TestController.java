@@ -81,7 +81,7 @@ public class TestController {
     ){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
-        return ResponseEntity.ok(addressService.makeAddressDefalut(user , id));
+        return ResponseEntity.ok(addressService.makeAddressDefault(user , id));
     }
 
     @PostMapping("/private/address/edit/{id}")
