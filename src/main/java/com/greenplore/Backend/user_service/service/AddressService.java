@@ -111,6 +111,7 @@ public class AddressService {
                 .orElseThrow(()-> new RuntimeException("Address not available"));
 
         address.setDefault(true);
+        addressRepo.save(address);
         for(Address ad : customer.getAddresses()){
             ad.setDefault(false);
             addressRepo.save(ad);
