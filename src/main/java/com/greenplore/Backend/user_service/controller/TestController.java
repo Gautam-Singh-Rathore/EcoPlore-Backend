@@ -66,6 +66,34 @@ public class TestController {
         return ResponseEntity.ok(addressService.addAddress(user , addressRequestDto));
     }
 
+    @PostMapping("/private/address/delete/{id}")
+    public ResponseEntity deleteAddress(
+            @PathVariable Long id
+    ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.deleteAddress(user , id));
+    }
+
+    @PostMapping("/private/address/make-default/{id}")
+    public ResponseEntity makeDefaultAddress(
+            @PathVariable Long id
+    ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.makeAddressDefalut(user , id));
+    }
+
+    @PostMapping("/private/address/edit/{id}")
+    public ResponseEntity editAddress(
+            @PathVariable Long id ,
+            @RequestBody AddressRequestDto addressRequestDto
+    ){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl user = (UserDetailsImpl) authentication.getPrincipal();
+        return ResponseEntity.ok(addressService.editAddress(user, addressRequestDto , id));
+    }
+
     // Get profile (same for seller and buyer)
 
     @GetMapping("private/profile")

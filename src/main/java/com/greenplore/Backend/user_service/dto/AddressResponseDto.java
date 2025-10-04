@@ -7,7 +7,8 @@ public record AddressResponseDto(
         String street ,
         String city ,
         String state ,
-        String pinCode
+        String pinCode,
+        boolean isDefault
 ) {
     public static AddressResponseDto from(Address address){
         return new AddressResponseDto(
@@ -15,7 +16,8 @@ public record AddressResponseDto(
                 address.getStreet(),
                 address.getCity(),
                 address.getState(),
-                address.getPinCode()
+                address.getPinCode() ,
+                address.isDefault()
         );
     }
 }
