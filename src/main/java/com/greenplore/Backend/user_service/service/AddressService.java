@@ -109,13 +109,13 @@ public class AddressService {
                 .orElseThrow(()-> new CustomerNotFound("Customer Not Found For email "+user.getUsername()));
         Address address = addressRepo.findById(id)
                 .orElseThrow(()-> new RuntimeException("Address not available"));
-
-        address.setDefault(true);
-        addressRepo.save(address);
         for(Address ad : customer.getAddresses()){
             ad.setDefault(false);
             addressRepo.save(ad);
         }
+        address.setDefault(true);
+        addressRepo.save(address);
+
         return "Address set as default";
     }
 }
