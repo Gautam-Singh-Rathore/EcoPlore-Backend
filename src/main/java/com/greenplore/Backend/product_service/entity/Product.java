@@ -1,5 +1,7 @@
 package com.greenplore.Backend.product_service.entity;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenplore.Backend.user_service.entity.Seller;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -26,8 +28,9 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @Column
-    private List<String> imageUrls;
+    @Lob
+    @Column(nullable = false)
+    private String imageUrlsSerialized;
 
     @Column(nullable = false)
     private Double price;
@@ -61,5 +64,17 @@ public class Product {
     private Integer width;
 
     private Integer weight;
+
+    // Method to serialize List<String> to a String before storing it in the database
+    public void setImageUrls(List<String> imageUrls) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        this.imageUrlsSerialized = objectMapper.writeValueAsString(imageUrls);  // Convert List to String (JSON)
+    }
+
+    // Method to deserialize the String back into a List<String> when retrieving the data
+    public List<String> getImageUrls() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(this.imageUrlsSerialized, List.class);  // Convert String back to List
+    }
 
 }

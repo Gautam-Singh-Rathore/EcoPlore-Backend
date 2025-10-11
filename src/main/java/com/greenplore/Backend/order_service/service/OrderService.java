@@ -99,7 +99,7 @@ public class OrderService {
                     .quantity(item.quantity())
                     .customer(customer)
                     .seller(product.getSeller())
-                    .orderAmount(50+ product.getPrice()* item.quantity())
+                    .orderAmount(product.getPrice()* item.quantity())
                     .deliveryAddress(deliverAddress)
                     .build();
 
@@ -174,7 +174,7 @@ public class OrderService {
     return ShipmentRequestDto.builder()
             .order_number(customer.getFirstName() + String.valueOf(System.currentTimeMillis()))
             .payment_type("prepaid")
-            .order_amount((double) (50 + product.getPrice() * quantity)) // Ensure double type
+            .order_amount((double) (product.getPrice() * quantity)) // Ensure double type
             .package_length(product.getLength() != null ? product.getLength() : 10) // Provide defaults
             .package_breadth(product.getWidth() != null ? product.getWidth() : 10)
             .package_height(product.getHeight() != null ? product.getHeight() : 10)
